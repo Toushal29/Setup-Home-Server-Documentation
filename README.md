@@ -14,19 +14,24 @@ Arch is lightweight and does not consume too much resources.
 
 ## Purpose
 - host web servers,
-- host files sharing (samba) via other PCs (Windows/MacOS/Linux),
+- host files sharing (samba),
 - host web files sharing (File Browser),
 - able to ssh from other PCs (local and non-local),
-- able to monitor resources (like using ubuntu web monitoring) -- lightweight, performance monitoring tools,
+- able to monitor resources (like using ubuntu web monitoring),
+- able to access files from other PCs from the file explorer,
 - able to remote desktop connect from other PCs - xrdp,
 - have an on/off gui that is light weight - switching/ turning on/off gui to cli easily so that i can allocate resources when not using gui
-- have a development server,
+- have a development server
 - VPN + Remote access that is secure,
-- ads blocking with either pi-hole or adguard home,
+- a lightweight, performance monitoring tools
+having the laptop lid close without turning off
+- auto login after power cut, no need to insert password, just press the power button and it auto launch the server
+- plan to use DuckDNS for accessing the server on the internet
+- have ports assign to different things
+- have virtual Ram support to ease ram usage, even if its slow for some activity
 
 ## Arch Linux Specific Upgrade
 - Use systemd services properly
-- Enable zram (huge help with 4 GB RAM)
 - Avoid heavy desktops → run headless
 
 ## The Hardware Details
