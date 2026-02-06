@@ -1,3 +1,6 @@
+[Jump to `Using Installation Script`](#autoInstall)<br>
+[Jump to `Manual Setup`](#manualInstall)<br>
+
 | Feature                     | Software / Tool              | Notes / Purpose                                          |
 |-----------------------------|------------------------------|----------------------------------------------------------|
 | OS                          | Ubuntu Server 24.04 LTS      | Headless, stable, 5+ years support                       |
@@ -13,15 +16,45 @@
 | Utilities                   | curl, wget, git, zip/unzip   | Common tools                                             |
  
 
-## First Boot & Post-Installation Setup
+<a id="autoInstall"></a>
+
+# First Boot & Post-Installation Setup
 Log in with your username and password.
 
+# Using installation Script:
+## 1. Install git if it's not already there (very small package)
+```bash
+sudo apt update
+sudo apt install git -y
+```
+## 2. Clone your repo (replace with your actual repo URL)
+```bash
+git clone https://github.com/Toushal29/Setup-Home-Server-Documentation.git
+```
+## 3. Go into the folder
+```bash
+cd Setup-Home-Server-Documentation
+```
+## 4. (Optional but recommended) Make sure the script is executable
+```bash
+chmod +x install_script.sh
+```
+## 5. Run it with sudo
+```bash
+sudo ./install_script.sh
+```
+
+<br><hr><br>
+
+<a id="manualInstall"></a>
+
+# Doing Manually Installation
 ```bash
 # Update system
 sudo apt update && sudo apt upgrade -y
 
 # Install basic utilities + SSH
-sudo apt install -y \ curl wget git unzip zip htop btop net-tools lm-sensors vim nano tree openssh-server
+sudo apt install -y \ curl wget git unzip zip htop btop net-tools lm-sensors vim nano tree openssh-server 
 ```
 
 **See `Monitoring.md` for installing `lm-sensors`**
@@ -156,48 +189,45 @@ Check `Monitoring.md` on how to install `lm-sensors`
 ## 2. **Other services**
 ### 1. **Samba**:
 ```bash
-mkdir -p /home/toushal/files
-sudo chown toushal:toushal /home/toushal/files
-chmod 770 /home/toushal/files
+chmod 770 /home/<username>
 ```
 
-Then edit Samba config:
+Edit Samba configuration:
 ```bash
 sudo nano /etc/samba/smb.conf
 ```
 
-Then Add at the end:
-```text
-[files]
-   path = /home/toushal/files
+Add the following at the end of the file:
+```ini
+[home]
+   path = /home/<username>
    browseable = yes
    writable = yes
-   valid users = toushal           # only this user
+   valid users = <username>
    create mask = 0660
    directory mask = 0770
-   force user = toushal
-   force group = toushal
+   force user = <username>
+   force group = <username>
 ```
 
-Then Set Samba password:
+Set Samba password for the user:
 ```bash
-sudo smbpasswd -a toushal
-sudo smbpasswd -e toushal           # enable the account
+sudo smbpasswd -a <username>
+sudo smbpasswd -e <username>           # enable the account
 ```
 
-Enable & start (runs 24/7):
+Enable and start Samba services:
 ```bash
 sudo systemctl enable --now smbd nmbd
+sudo systemctl status smbd nmbd        # Check status
 ```
 
-Verify:
-```bash
-sudo systemctl status smbd nmbd
-```
+**Access from other computers:**
+- Windows → \\<server-name>\home :: (example: \\homeserver\home)
+- Linux (file manager) → smb://<server-name>/home
+- macOS → smb://<server-name>/home
 
-Access: <br>
-Windows: `\\homeserver\files` <br>
-Linux: `smb://homeserver/files`
+
 
 ### 2 **File Browser**: Configure as systemd service, default http://<server-ip>:8080.
 Download and install
@@ -205,49 +235,51 @@ Download and install
 curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
 ```
 
-Create Directory
+Create only the data directory (for the database):
 ```bash
-sudo mkdir -p /srv/filebrowser/{data,files}
-sudo chown -R toushal:toushal /srv/filebrowser
+sudo mkdir -p /srv/filebrowser/data
+sudo chown -R <username>:<username> /srv/filebrowser
 ```
 
-Setup admin user + password
+Create admin user (choose a strong password <YOUR_STRONG_PASSWORD_HERE>):
 ```bash
-# Replace YOUR_PASSWORD_HERE with your real password (the same one you use for login).
-filebrowser users add toushal <YOUR_PASSWORD_HERE> --perm.admin
+filebrowser users add <username> <YOUR_STRONG_PASSWORD_HERE> --perm.admin
 ```
 
-Create a systemd service
+Create the systemd service file:
 ```bash
 sudo nano /etc/systemd/system/filebrowser.service
 ```
-Add:
+
+Paste exactly this content:
 ```ini
 [Unit]
-Description=File Browser – authenticated
+Description=File Browser – Home Directory Access
 After=network.target
 
 [Service]
-User=toushal
-Group=toushal
-ExecStart=/usr/local/bin/filebrowser -r /srv/filebrowser/files -d /srv/filebrowser/data/database.db -p 8080 --noauth=false
+User=<username>
+Group=<username>
+ExecStart=/usr/local/bin/filebrowser -r /home/<username> -d /srv/filebrowser/data/database.db -p 8080 --noauth=false
 Restart=always
-WorkingDirectory=/home/toushal
+WorkingDirectory=/home/<username>
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-Then Restart and Enable
+Apply changes and start the service:
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable --now filebrowser
+sudo systemctl status filebrowser         # Check Status
 ```
 
-Verify
-```bash
-sudo systemctl status filebrowser
-```
+**Access**:
+- Open in browser: http://<server-ip>:8080 or http://<tailscale-ip>:8080
+- Login with:
+   - Username: <username>
+   - Password: the one you set above
 
 ### 3. Tailscale
 ```bash

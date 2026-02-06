@@ -44,12 +44,10 @@ This guide walks you through installing and configuring a lightweight home serve
    - Confirm → it creates EFI (~1 GB), root (ext4), and small swap
 7. **Profile setup**  
    - Your name: (can be anything)  
-   - Server name: `homeserver` (or whatever you like)  
-   - Username: `toushal` (or your preferred username)  
+   - Server name: `server` (or whatever you like)  
+   - Username: `username` (or your preferred username)  
    - Password: choose a strong password
 8. **Install OpenSSH server** → **CHECK THIS BOX** (very important!)
 9. **Featured Server Snaps** → **leave all unchecked**
 10. Confirm and install
 11. Reboot and remove USB
-
-

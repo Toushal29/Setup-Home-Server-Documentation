@@ -3,7 +3,7 @@
 1. **Sign Up and Get Your Token**
     - Go to https://www.duckdns.org/ in a browser.
     - Log in (use Google, Reddit, GitHub, Twitter/X, or Persona).
-    - Create a subdomain (e.g., `toushal-home` → becomes `toushal-home.duckdns.org`).
+    - Create a subdomain (e.g., `<username>-home` → becomes `<username>-home.duckdns.org`).
     - Copy your token
 
 2. **Install DuckDNS Updater (Recommended: AUR `duckdns` package)**<br>
@@ -19,11 +19,11 @@
         ```bash
         sudo nano /etc/duckdns/<your-subdomain>.conf
         ```
-        - Replace `your-subdomain` with yours (e.g., `toushal-home.conf`)
+        - Replace `your-subdomain` with yours (e.g., `<username>-home.conf`)
         - Content (minimal example)
         ```text
         token=<token>
-        domain=toushal-home
+        domain=<username>-home
         ipv6=no   # Set to yes if you have IPv6 and want it
         ```
         - `token=` your DuckDNS token
@@ -49,7 +49,7 @@
 
     - Test manually:
         ```bash
-        sudo /usr/bin/duckdns-update toushal-home   # replace with your domain
+        sudo /usr/bin/duckdns-update <username>-home   # replace with your domain
         ```
         - It should output "OK" if successful.
 
@@ -70,7 +70,7 @@
     - Use certbot for free HTTPS:
         ```bash
         sudo pacman -S certbot certbot-nginx
-        sudo certbot --nginx -d toushal-home.duckdns.org
+        sudo certbot --nginx -d <username>-home.duckdns.org
         ```
         - Follow prompts → auto-configures HTTPS.
 
@@ -85,10 +85,10 @@
         - Install `wireguard-tools`
         - Generate keys, config WG interface on UDP 51820.
         - Forward 51820/UDP on router.
-        - Clients connect to `toushal-home.duckdns.org:51820`
+        - Clients connect to `<username>-home.duckdns.org:51820`
 
 
 7. **Verify Everything**
-    - From phone on mobile data: Visit `https://toushal-home.duckdns.org (after HTTPS setup)`
-    - Check IP update: https://www.duckdns.org/update?domains=toushal-home&token=your-token&ip= (should say "OK").
+    - From phone on mobile data: Visit `https://<username>-home.duckdns.org (after HTTPS setup)`
+    - Check IP update: https://www.duckdns.org/update?domains=<username>-home&token=your-token&ip= (should say "OK").
     - Logs: `journalctl -u duckdns.service -f` to watch real-time.
