@@ -1,12 +1,11 @@
 # Monitoring
-
 ## Quick Setup for Temperatures (Important on Old Laptop)
-Many monitoring tools need lm_sensors for CPU/motherboard temps:
+Most temperature monitoring tools (including netdata) depend on `lm-sensors` for CPU/motherboard temps.
 
 ```bash
-sudo pacman -S lm_sensors
-sudo sensors-detect --auto   # answer yes to most, but read carefully
-sensors                  # test output
+sudo apt install -y lm-sensors
+sudo sensors-detect --auto     # answer YES to most questions
+sensors                        # verify output
 ```
 
 Then netdata will show temps automatically.
