@@ -30,6 +30,14 @@ if [ "$(hostname)" != "$HOSTNAME" ]; then
     echo "Hostname set to $HOSTNAME"
 fi
 
+# Fix APT mirror: force worldwide Ubuntu mirrors (avoid regional MU mirror issues)
+sudo sed -i \
+  -e 's|http://[^ ]*archive.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' \
+  -e 's|http://[^ ]*security.ubuntu.com/ubuntu|http://security.ubuntu.com/ubuntu|g' \
+  /etc/apt/sources.list
+
+sudo apt clean
+
 # 1. Update system
 sudo apt update && sudo apt upgrade -y
 
