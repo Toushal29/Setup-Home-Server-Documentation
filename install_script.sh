@@ -153,8 +153,16 @@ fi
 mkdir -p /srv/filebrowser/data
 chown -R $USERNAME:$USERNAME /srv/filebrowser
 
-if ! filebrowser users list 2>/dev/null | grep -q "^$USERNAME"; then
-  filebrowser users add "$USERNAME" "$FILEBROWSER_PASSWORD" --perm.admin
+DB="/srv/filebrowser/data/database.db"
+
+# Initialize config ONCE
+if [ ! -f "$DB" ]; then
+  filebrowser config init -d "$DB"
+fi
+
+# Create admin user ONCE
+if ! filebrowser users list -d "$DB" 2>/dev/null | grep -q "^$USERNAME"; then
+  filebrowser users add "$USERNAME" "$FILEBROWSER_PASSWORD" --perm.admin -d "$DB"
 fi
 
 cat << EOF > /etc/systemd/system/filebrowser.service
@@ -165,7 +173,10 @@ After=network.target
 [Service]
 User=$USERNAME
 Group=$USERNAME
-ExecStart=/usr/local/bin/filebrowser -r /home/$USERNAME -d /srv/filebrowser/data/database.db -p 8080
+ExecStart=/usr/local/bin/filebrowser \
+  -r /home/$USERNAME \
+  -d $DB \
+  -p 8080
 Restart=always
 
 [Install]
