@@ -86,25 +86,7 @@ sudo systemctl disable --now tailscaled
 sudo systemctl restart tailscaled
 ```
 
-### 3. Netdata Commands : (Service: netdata) <a id="netdataServices"></a>
-```bash
-# Check status
-systemctl status netdata
-# Start
-sudo systemctl start netdata
-# Stop
-sudo systemctl stop netdata
-# Enable
-sudo systemctl enable --now netdata
-# Disable
-sudo systemctl disable --now netdata
-# Restart
-sudo systemctl restart netdata
-# Reload (for config changes to /etc/netdata/netdata.conf)
-sudo systemctl reload netdata
-```
-
-### 4. Samba Commands : (Services: smbd and nmbd) <a id="sambaServices"></a>
+### 3. Samba Commands : (Services: smbd and nmbd) <a id="sambaServices"></a>
 ```bash
 # Check status
 systemctl status smbd
@@ -123,7 +105,7 @@ sudo systemctl restart smbd nmbd
 sudo systemctl reload smbd
 ```
 
-### 5. File Browser Commands : (Service: filebrowser) <a id="filebrowserServices"></a>
+### 4. File Browser Commands : (Service: filebrowser) <a id="filebrowserServices"></a>
 ```bash
 # Check status
 systemctl status filebrowser
@@ -141,7 +123,7 @@ sudo systemctl restart filebrowser
 sudo systemctl daemon-reload
 ```
 
-### 6. Nginx Commands <a id="nginxServices"></a>
+### 5. Nginx Commands <a id="nginxServices"></a>
 ```bash
 # Check status
 systemctl status nginx
@@ -159,7 +141,7 @@ sudo systemctl restart nginx
 sudo systemctl reload nginx
 ```
 
-### 7. PostgreSQL Commands : (Service: postgresql or postgresql@16-main on Ubuntu 24.04) <a id="postgreServices"></a>
+### 6. PostgreSQL Commands : (Service: postgresql or postgresql@16-main on Ubuntu 24.04) <a id="postgreServices"></a>
 - **Note**: Version-specific (16); use `postgresql` for general commands.
 ```bash
 # Check status
@@ -178,7 +160,7 @@ sudo systemctl restart postgresql
 sudo systemctl reload postgresql
 ```
 
-### 8. XRDP Commands : (Services: xrdp and xrdp-sesman) <a id="xrdpServices"></a>
+### 7. XRDP Commands : (Services: xrdp and xrdp-sesman) <a id="xrdpServices"></a>
 ```bash
 # Check status
 systemctl status xrdp

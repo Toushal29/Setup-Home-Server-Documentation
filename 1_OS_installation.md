@@ -5,20 +5,7 @@
 
 This guide walks you through installing and configuring a lightweight home server on an old laptop (Intel Core i3, 4 GB RAM, 500 GB disk) using **Ubuntu Server**.
 
-**Goals**:
-- Headless by default (CLI only)
-- File sharing (Samba + File Browser)
-- Web server & development (Nginx, Python, Node.js, Go, PostgreSQL)
-- Secure remote access (Tailscale)
-- Optional remote desktop (XRDP + Openbox – very light)
-- Monitoring (netdata + btop)
-- Lid close does not suspend
-- Auto-login after power-on
-- DuckDNS + port forwarding
-- Minimal resource usage (4 GB swapfile)
-
 ## 1. Preparation
-
 1. Download Ubuntu Server ISO
 2. Create bootable USB
 3. Boot from USB  
