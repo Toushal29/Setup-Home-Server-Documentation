@@ -38,16 +38,15 @@ sudo systemctl enable --now cockpit.socket
 | Internet  | Untrusted    | No direct access           |
 
 ---
-## 5. Service Exposure Policy
+## 5. Service Exposure Policy 
+**NOTE**: Port are changed afterwards
+| Service     | Port  | Allowed From        |
+|-------------|-------|---------------------|
+| SSH         | 2222  | LAN + Tailscale     |
+| Samba       | 445   | LAN + Tailscale     |
+| Filebrowser | 8080  | LAN + Tailscale     |
+| Cockpit     | 9090  | LAN + Tailscale     |
 
-| Service     | Port | Allowed From            |
-| ----------- | ---- | ----------------------- |
-| SSH         | e.g - 2222 | Tailscale only          |
-| Samba       | 445  | LAN only                |
-| Filebrowser | 8080 | Tailscale only          |
-| Cockpit     | 9090 | Tailscale only          |
-| HTTP        | 80   | LAN / Public (optional) |
-| HTTPS       | 443  | LAN / Public (optional) |
 
 ---
 ## 6. Install nftables
@@ -64,10 +63,6 @@ sudo nano /etc/nftables.conf
 ```
 
 ```nft
-#!/usr/sbin/nft -f
-
-flush ruleset
-
 table inet filter {
   chain input {
     type filter hook input priority 0;
@@ -76,27 +71,23 @@ table inet filter {
     # Loopback
     iif lo accept
 
-    # Established connections
+    # Established / Related
     ct state established,related accept
 
     # ICMP (ping)
     ip protocol icmp accept
     ip6 nexthdr icmpv6 accept
 
-    # SSH (Tailscale only)
-    iifname "tailscale0" tcp dport 2222 accept
+    # ------------------------
+    # LAN access (adjust subnet!)
+    # ------------------------
+    ip saddr 192.168.1.0/24 tcp dport {2222, 8080, 9090, 445} accept
 
-    # Filebrowser (Tailscale only)
-    iifname "tailscale0" tcp dport 8080 accept
+    # ------------------------
+    # Tailscale access
+    # ------------------------
+    iifname "tailscale0" tcp dport {2222, 8080, 9090, 445} accept
 
-    # Cockpit (Tailscale only)
-    iifname "tailscale0" tcp dport 9090 accept
-
-    # Samba (LAN only)
-    ip saddr 192.168.0.0/16 tcp dport 445 accept
-
-    # Web services
-    tcp dport {80, 443} accept
   }
 
   chain forward {
@@ -109,10 +100,10 @@ table inet filter {
 }
 ```
 
----
 ## 8. Apply and Verify
 ```bash
 sudo nft -f /etc/nftables.conf
+sudo systemctl restart nftables
 sudo nft list ruleset
 ```
 
@@ -120,15 +111,13 @@ sudo nft list ruleset
 ## 9. Safety Checks (IMPORTANT)
 Before closing your SSH session:
 ```bash
-ssh -p 2222 <username>@<tailscale-ip>
+ssh -p <port> <username>@<tailscale-ip>
 ```
 
 If SSH works over Tailscale, the firewall is safe.
 
 ---
 ## Resulting Security State
-
-* All inbound traffic blocked by default
-* SSH reachable only via Tailscale
-* Samba restricted to LAN
-* Admin interfaces not exposed publicly
+* SSH reachable via LAN and Tailscale
+* Samba reachable via LAN and Tailscale
+* Admin interfaces not exposed to public Internet

@@ -7,6 +7,7 @@ This module configures the **main functional services** provided by the server.
 ## 1. Samba (LAN File Sharing)
 This module configures the **main functional services** provided by the server.<br>
 All services run as **native systemd services**
+
 ### Permissions
 ```bash
 sudo chmod 755 /home

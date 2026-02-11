@@ -30,6 +30,13 @@ Restart:
 sudo systemctl restart zramswap
 ```
 
+Check:
+```bash
+free -h
+swapon --show
+zramctl
+```
+
 ## 2. Lid Close – Do Not Suspend
 Edit:
 ```bash

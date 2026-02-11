@@ -1,7 +1,10 @@
+([Jump to Auto Installation](#autoInstall))
+([Jump to Manual Installation](#manInstall))
+
 # Setting-up-a-Home-Server
 Setting up a home server using an old laptop
 
-## The Hardware Details
+## Hardware
 - Intel(R) Core(TM) i3-5005U CPU @ 2.00GHz
   - configuration: cores=2 enabledcores=2 microcode=47 threads=4
 - 4 Gib DDR3L @ 1600 MHz (0.6 ns)
@@ -11,6 +14,57 @@ Setting up a home server using an old laptop
 ## The OS
 Using Ubuntu Server 24.04 LTS as OS for the server. <br>
 Ubuntu Server is very stable, widely documented, has 5 years of support, and is extremely lightweight when no desktop is installed.
+
+## Architecture Overview
+```md
+Internet
+   ↓ (Blocked by firewall)
+Tailscale VPN
+   ↓
+[ Ubuntu Server ]
+   ├── SSH (2222, LAN + Tailscale)
+   ├── Samba (445, LAN + Tailscale)
+   ├── File Browser (8080, LAN + Tailscale)
+   ├── Cockpit (9090, LAN + Tailscale)
+   ├── Nginx (80/443 optional)
+   └── PostgreSQL (local only)
+```
+
+<a id="autoInstall"></a>
+
+# Automated Installation
+⚠ Run on a fresh Ubuntu Server 24.04 system.
+## Clone Repository
+```bash
+sudo apt update
+sudo apt install git -y
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO/Scripts
+chmod +x *.sh
+```
+
+## Run Installer
+```bash
+sudo ./install.sh
+```
+
+## After Installation
+```bash
+sudo reboot
+```
+
+<a id="manInstall"></a>
+
+# Manual Installation Order
+Follow modules in this exact order:
+1. 1_OS_installation.md
+2. 2_Base_system.md
+3. 3_Access_ssh.md
+4. 4_System_behavior.md
+5. 5_Networking_remote.md
+6. 6_Core_services.md
+7. 7_Optional_desktop.md
+8. 8_Backups.md
 
 ## Purpose
 - host web servers,
@@ -27,11 +81,19 @@ Ubuntu Server is very stable, widely documented, has 5 years of support, and is 
 - have ports assign to different things
 - have virtual Ram support to ease ram usage, even if its slow for some activity
 
-## Ubuntu Server Notes
-- Runs headless by default (no GUI installed)
-- Uses systemd.
-- Prefer `apt`, use `systemctl` the same way
+## Goals:
+- Headless by default (CLI only)
+- File sharing (Samba + File Browser)
+- Web server & development (Nginx, Python, Node.js, Go, PostgreSQL)
+- Secure remote access (Tailscale)
+- Remote desktop access (XRDP + XFCE)
+- Monitoring via Cockpit (web) and btop (terminal)
+- Laptop lid can be closed without suspending
+- Auto-login after power-on / power loss
+- Ports assigned per service
+- Optimized memory usage using swapfile + zram (4 GB RAM system)
 
+---
 
 | Feature                     | Software / Tool                    | Notes / Purpose                                                     |
 |-----------------------------|------------------------------------|----------------------------------------------------------------------|
@@ -48,24 +110,11 @@ Ubuntu Server is very stable, widely documented, has 5 years of support, and is 
 | Power Optimization          | Lid ignore                         | Laptop-friendly 24/7 operation                                      |
 | Utilities                   | curl, wget, git, zip/unzip         | Common system tools                                                  |
 
+---
 
-**Goals**:
-- Headless by default (CLI only)
-- File sharing (Samba + File Browser)
-- Web server & development (Nginx, Python, Node.js, Go, PostgreSQL)
-- Secure remote access (Tailscale)
-- Remote desktop access (XRDP + XFCE)
-- Monitoring via Cockpit (web) and btop (terminal)
-- Laptop lid can be closed without suspending
-- Auto-login after power-on / power loss
-- Ports assigned per service
-- Optimized memory usage using swapfile + zram (4 GB RAM system)
-
-
-<hr>
 <a id="hardwareDetail"></a>
 
-#### Hardware Detail
+## Hardware Detail
 ```text    
 *-cpu
      description: CPU
